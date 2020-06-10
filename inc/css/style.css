@@ -1,0 +1,36 @@
+body {
+	font-size: 20pt;
+}
+
+#slots {
+	text-align: center;
+}
+
+.inactive {
+	display: none;
+}
+
+button {
+	font-size: 16pt;
+	background-color: indianred;
+	border: none;
+	width: 3em;
+	height: 2em;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 1em;
+	border-radius: 3px;
+}
+
+.elem {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	background-color: antiquewhite;
+	padding: 10px;
+	margin: 3px;
+	border-radius: 3px;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 1em;
+}
