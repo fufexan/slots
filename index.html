@@ -9,12 +9,19 @@
 </head>
 <body>
     <div id="slots">
+        <form id="radios">
+            <input type="radio" name="playtype" id="numbers" checked>
+            <label for="number">Numbers</label>
+            <input type="radio" name="playtype" id="images">
+            <label for="image">Images</label>
+            <input type="radio" name="playtype" id="emoji">
+            <label for="emoji">Emoji</label>
+        </form>
         <div class="elem"></div>
         <div class="elem"></div>
         <div class="elem"></div>
         <button id="play">Play</button>
-        <p id="message-loss" class="inactive">Oof, you lost 😕</p>
-        <p id="message-win"  class="inactive">Hooray! 🥳</p>
+        <p id="message" class="inactive"></p>
     </div>
 </body>
 </html>

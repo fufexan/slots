@@ -1,3 +1,4 @@
+" vim config
 " 2 spaces indents
 set et
 set sts
