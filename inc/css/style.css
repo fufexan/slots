@@ -1,5 +1,5 @@
 body {
-	font-size: 20pt;
+	font-size: 1.2em;
 }
 
 #slots {
@@ -11,22 +11,19 @@ body {
 }
 
 button {
-	font-size: 16pt;
+	font-size: .6em;
 	background-color: indianred;
 	border: none;
-	width: 3em;
 	height: 2em;
+	padding: 0 10px;
 	text-align: center;
 	vertical-align: middle;
 	line-height: 1em;
 	border-radius: 3px;
 }
 
-#radios {
-	font-size: 14pt;
-}
-
 .elem {
+	font-size: 20pt;
 	display: inline-block;
 	width: 50px;
 	height: 50px;
@@ -35,11 +32,74 @@ button {
 	border-radius: 3px;
 	text-align: center;
 	vertical-align: middle;
-	line-height: 2em;
+	line-height: 1.8em;
 }
 
 .slot-img {
 	border-radius: 3px;
 	width: 50px;
 	height: 50px;
+}
+
+.logo-title {
+	text-decoration: indigo underline;
+	text-align: center;
+	font-style: italic;
+}
+
+p {
+	display: inline-block;
+}
+
+ul {
+	list-style: inside;
+	text-align: center;
+	margin: auto;
+}
+
+.bad {
+	color: red;
+	background-color: black;
+	padding: 5px 10px;
+	border-radius: 3px;
+}
+
+.green {
+	color: lightgreen;
+	background-color: black;
+	padding: 5px 10px;
+	border-radius: 3px;
+}
+
+.gold {
+	color: gold;
+	background-color: indigo;
+	padding: 5px 10px;
+	border-radius: 3px;
+}
+
+#rules {
+	margin: 10px;
+}
+
+#radios {
+	margin: 10px;
+}
+
+#leaderboard {
+	text-align: center;
+}
+
+#leaderboard p {
+	margin-bottom: 5px;
+}
+
+td, th {
+	border: 1px solid #ddd;
+	padding: 5px 10px;
+}
+
+table {
+	margin: auto;
+	border-collapse: collapse;
 }
