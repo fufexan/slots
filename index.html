@@ -5,53 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Slots</title>
   <link rel="stylesheet" href="inc/css/style.css" type="text/css">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="inc/js/main.js" defer></script>
 </head>
 <body>
-  <h1 class="logo-title">Slots</h1>
-  <div id="slots">
-    <p style="display: block" id="wallet"></p>
-    <label for="username">Username:</label>
-    <input type="text" name="username" id="username">
-    <label for="bet">Bet:</label>
-    <input type="number" name="bet" id="bet">
-    <br>
-    <p id="brokenrule" class="inactive"></p>
-    <form id="radios">
-      <input type="radio" name="playtype" id="numbers" checked>
-      <label for="number">Numbers</label>
-      <input type="radio" name="playtype" id="images">
-      <label for="image">Images</label>
-      <input type="radio" name="playtype" id="emoji">
-      <label for="emoji">Emoji</label>
-    </form>
-    <div class="elem"></div>
-    <div class="elem"></div>
-    <div class="elem"></div>
-    <button id="play">Play</button>
-    <button id="reset">Reset</button>
-    <br>
-    <p id="message" class="inactive"></p>
-  </div>
-  <ul id="rules">
-    <li>Can't bet more than the amount in your wallet</li>
-    <li>Can't bet less than half the amount in your wallet</li>
-    <li>2 identical slots yield 1.5 x bet value</li>
-    <li>3 identical slots yield 2 x bet value</li>
-    <li>The game ends when you have no money left</li>
-  </ul>
-  <div id="leaderboard">
-    <p>Leaderboard</p>
-    <table>
-      <thead>
-        <th>#</th>
-        <th>Name</th>
-        <th>Timestamp</th>
-        <th>Score</th>
-        <th>Moves</th>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
+  <div id="vm">
+    <h1 class="logo-title">Slots</h1>
+    <div id="slots">
+      <p style="display: block">Wallet: {{ money }}</p>
+      <label for="username">Username:</label>
+      <input type="text" name="username" id="username" @change="newLBEntry" v-model="username">
+      <label for="bet">Bet:</label>
+      <input type="number" name="bet" id="bet" v-model="bet">
+      <br>
+      <p id="brokenrule" :class="brokenruleClass"> {{ brokenrule }} </p>
+      <form id="radios">
+        <p>Game type:</p>
+        <input type="radio" name="playtype" id="numbers" @click="getPlayType" checked>
+        <label for="number">Numbers</label>
+        <input type="radio" name="playtype" id="images" @click="getPlayType">
+        <label for="image">Images</label>
+        <input type="radio" name="playtype" id="emoji" @click="getPlayType">
+        <label for="emoji">Emoji</label>
+      </form>
+      <div class="elem"><span v-html="slot[0]"></span></div>
+      <div class="elem"><span v-html="slot[1]"></span></div>
+      <div class="elem"><span v-html="slot[2]"></span></div>
+      <button @click="playGame">Play</button>
+      <button @click="resetGame">Reset</button>
+      <br>
+      <p id="message" :class="messageClass">{{ message }}</p>
+    </div>
+    <ul id="rules">
+      <li>Can't bet more than the amount in your wallet</li>
+      <li>Can't bet less than half the amount in your wallet</li>
+      <li>2 identical slots yield 1.5 x bet value</li>
+      <li>3 identical slots yield 2 x bet value</li>
+      <li>The game ends when you have no money left</li>
+    </ul>
+    <div :class="{ inactive: LBEmpty }" id="leaderboard">
+      <p>Leaderboard</p>
+      <table>
+        <thead>
+          <th>#</th>
+          <th>Name</th>
+          <th>Timestamp</th>
+          <th>Score</th>
+          <th>Moves</th>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
   </div>
 </body>
 </html>

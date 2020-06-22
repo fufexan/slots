@@ -92,6 +92,15 @@ ul {
 
 #leaderboard p {
 	margin-bottom: 5px;
+	counter-reset: trows;
+}
+
+tbody tr {
+	counter-increment: trows;
+}
+
+tbody tr td:first-child::before {
+	content: counter(trows);
 }
 
 td, th {
