@@ -1,13 +1,31 @@
+// firebase config
+var firebaseConfig = {
+    apiKey: "AIzaSyDTvNXN6mfr3dvHOYlyUgUAI3Tcou0N1Vw",
+    authDomain: "gloslots.firebaseapp.com",
+    databaseURL: "https://gloslots.firebaseio.com",
+    projectId: "gloslots",
+    storageBucket: "gloslots.appspot.com",
+    messagingSenderId: "362358748175",
+    appId: "1:362358748175:web:6e534a75080839c0a11f7a",
+    measurementId: "G-B66LH8Q9HX"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+
+var lb = firebase.firestore().collection('leaderboard');
+
 var vm = new Vue({
   el: '#vm',
   data: {
     money: 100,
     username: null,
+    prevUsername: null,
     bet: null,
     currentEntry: {
       user: null,
       date: null,
-      hs: null,
+      highscore: null,
       moves: null
     },
     slot: ['?', '?', '?'],
@@ -24,15 +42,39 @@ var vm = new Vue({
     message: null,
     brokenrule: null,
     LBEmpty: true,
+    fullBet: false,
+
+    sortAsc: '&#x25b2;',
+    sortDesc: '&#x25bc;',
+    sorter: '&#x25b2;',
+    prev: 'user',
+    order: 'asc',
   },
   methods: {
+    reverseOrder: function () {
+      if (this.order == 'asc') {
+        this.order = 'desc';
+        this.sorter = this.sortDesc;
+      } else {
+        this.order = 'asc';
+        this.sorter = this.sortAsc;
+      }
+    },
+
     // creates a new entry in the HTML leaderboard with the given content
-    addToLB: function (content) {
+    addToLB: function (content, fromFirebase = false) {
       let d = '<td>';
-      let e = '</td>'
+      let e = '</td>';
+      let date;
+      if (fromFirebase) {
+        date = content.date.toDate();
+      } else {
+        date = content.date;
+      }
       let fcontent = '<tr>' + d + e + d + content.user + e + d +
-        content.date + e + d + content.hs + e + d + content.moves + e + '</tr>';
+        this.getDate(date) + e + d + content.highscore + e + d + content.moves + e + '</tr>';
       tbody.innerHTML += fcontent;
+      this.isLBEmpty();
     },
 
     // slots get reset to '?' and all messages disappear
@@ -45,15 +87,15 @@ var vm = new Vue({
     // resets elements and currentEntry after adding to LB
     // resets money and sets corresponding bet
     resetGame: function (event) {
-      console.log(event);
-      if (this.currentEntry.user != (null || '') && this.currentEntry.moves) {
-        this.addToLB(this.currentEntry);
+      if (!!this.currentEntry.user && !!this.currentEntry.moves) {
+        this.updateFirebaseLB(this.currentEntry);
       }
+      this.getFirebaseLB(this.prev, this.order);
       this.isLBEmpty();
       this.newLBEntry();
       this.resetElements();
       this.money = 100;
-      this.setBet();
+      this.setBet(this.fullBet);
     },
 
     // numbers, images, emoji
@@ -109,7 +151,7 @@ var vm = new Vue({
 
           // set highscore
           let what = null;
-          if (this.money > this.currentEntry.hs) {
+          if (this.money > this.currentEntry.highscore) {
             what = 'both';
           }
           // auto increments moves no matter what (get it?)
@@ -123,7 +165,7 @@ var vm = new Vue({
           this.brokenrule = 'Bet more!';
         }
         // set new bet to half the money
-        this.setBet();
+        this.setBet(this.fullBet);
       } else {
         this.brokenrule = 'Choose a username!';
       }
@@ -138,8 +180,8 @@ var vm = new Vue({
     // resets currentEntry
     newLBEntry: function () {
       this.currentEntry.user = this.username;
-      this.currentEntry.date = this.getDate();
-      this.currentEntry.hs = 0;
+      this.currentEntry.date = new Date();
+      this.currentEntry.highscore = 0;
       this.currentEntry.moves = 0;
     },
 
@@ -147,13 +189,13 @@ var vm = new Vue({
     updateLBEntry: function (what = null) {
       this.currentEntry.moves++;
       if (what == 'both') {
-        this.currentEntry.hs = this.money;
+        this.currentEntry.highscore = this.money;
       }
     },
 
     // format date as DD.MM.YYYY HH:MM
-    getDate: function () {
-      let d = new Date();
+    getDate: function (time) {
+      let d = new Date(time);
       // what ('0' + etc).slice(-2) does: if etc is a digit, it adds 0 before it
       // if etc is 2 digits, that 0 gets cut at the end
       let date = ('0' + d.getDate()).slice(-2) + '.' + ('0' + d.getMonth()).slice(-2) + '.' + d.getFullYear();
@@ -166,9 +208,15 @@ var vm = new Vue({
       this.message = this.shuffle(arr);
     },
 
-    // set bet as (a bit more than) half the money
-    setBet: function () {
-      this.bet = Math.ceil(this.money / 2);
+    // set bet as [(a bit more than) half] the money
+    setBet: function (full = false) {
+      if (full) {
+        this.bet = this.money;
+      } else if (this.money > 1) {
+        this.bet = Math.ceil(this.money / 2);
+      } else {
+        this.bet = this.money / 2;
+      }
     },
 
     // leaderboard functions
@@ -188,22 +236,38 @@ var vm = new Vue({
       this.isLBEmpty();
     },
 
-    updateFirebaseLB: function () {
-
+    updateFirebaseLB: async function (content) {
+      lb.add({
+        user: content.user,
+        date: firebase.firestore.Timestamp.fromDate(content.date),
+        highscore: content.highscore,
+        moves: content.moves
+      })
     },
 
-    getFirebaseLB: function () {
-
+    getFirebaseLB: async function (orderBy = 'user', order = 'asc') {
+    // orderBy: [highscore, moves, user, date]
+    // order: [asc, desc]
+    this.resetLB();
+    lb.orderBy(orderBy, order).get().then(function (docs) {
+      docs.forEach(function (doc) {
+          vm.addToLB(doc.data(), true);
+        });
+      });
     },
 
-    setImages: function (ricardo = false) {
-      this.arr_images = this.arr_numbers.map( e => '<img src="inc/img/' + (ricardo ? 'ricardo' : '') + e + '.jpg" class="slot-img">' );
-      this.playType = this.arr_images;
+    setImages: function () {
+      let r = false;
+      if (this.username) {
+        this.username.toLowerCase().includes('ricardo') ? r = true : '';
+      }
+      this.arr_images = this.arr_numbers.map( e => '<img src="inc/img/' +
+        (r ? 'ricardo' : '') + e + '.jpg" class="slot-img">' );
+      if (r) {
+        this.playType = this.arr_images;
+      }
     },
 
-    resetHold: function (event) {
-      console.log(event);
-    },
   },
   computed: {
     brokenruleClass: function () {
@@ -219,12 +283,19 @@ var vm = new Vue({
         green: this.messages_semi.includes(this.message),
         gold: this.messages_jackpot.includes(this.message),
       }
-    }
+    },
   },
+  watch: {
+    username: function () {
+      this.setImages();
+    },
+  },
+  beforeMount: function () {
+    this.setImages();
+    this.playType = this.arr_numbers;
+    this.resetGame();
+    tbody.innerHTML = null;
+    this.isLBEmpty();
+  }
 })
 
-vm.setImages();
-vm.playType = vm.arr_numbers;
-vm.resetGame();
-tbody.innerHTML = null;
-vm.isLBEmpty();

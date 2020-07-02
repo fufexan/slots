@@ -1,114 +1,174 @@
 body {
-	font-size: 1.2em;
+  font-size: 1.2em;
+  font-family: Helvetica, sans-serif;
 }
 
 #slots {
-	text-align: center;
+  text-align: center;
 }
 
 .inactive {
-	display: none;
+  display: none;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 2em;
+  height: 1.1em;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2196f3;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+  border-radius: 1.1em;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 0.9em;
+  width: 0.9em;
+  left: 0.1em;
+  bottom: 0.1em;
+  background-color: white;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(0.9em);
+  -ms-transform: translateX(0.9em);
+  transform: translateX(0.9em);
 }
 
 button {
-	font-size: .6em;
-	background-color: indianred;
-	border: none;
-	height: 2em;
-	padding: 0 10px;
-	text-align: center;
-	vertical-align: middle;
-	line-height: 1em;
-	border-radius: 3px;
+  font-size: 0.6em;
+  background-color: royalblue;
+  border: none;
+  height: 2em;
+  padding: 0 10px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 1em;
+  border-radius: 3px;
 }
 
 .elem {
-	font-size: 20pt;
-	display: inline-block;
-	width: 50px;
-	height: 50px;
-	background-color: antiquewhite;
-	margin: 3px;
-	border-radius: 3px;
-	text-align: center;
-	vertical-align: middle;
-	line-height: 1.8em;
+  font-size: 20pt;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  background-color: antiquewhite;
+  margin: 3px;
+  border-radius: 3px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 1.8em;
 }
 
 .slot-img {
-	border-radius: 3px;
-	width: 50px;
-	height: 50px;
+  border-radius: 3px;
+  width: 50px;
+  height: 50px;
 }
 
 .logo-title {
-	text-decoration: indigo underline;
-	text-align: center;
-	font-style: italic;
+  text-decoration: indigo underline;
+  text-align: center;
+  font-style: italic;
 }
 
 p {
-	display: inline-block;
+  display: inline-block;
 }
 
 ul {
-	list-style: inside;
-	text-align: center;
-	margin: auto;
+  list-style: inside;
+  text-align: center;
+  margin: auto;
 }
 
 .bad {
-	color: red;
-	background-color: black;
-	padding: 5px 10px;
-	border-radius: 3px;
+  color: red;
+  background-color: black;
+  padding: 5px 10px;
+  border-radius: 3px;
 }
 
 .green {
-	color: lightgreen;
-	background-color: black;
-	padding: 5px 10px;
-	border-radius: 3px;
+  color: lightgreen;
+  background-color: black;
+  padding: 5px 10px;
+  border-radius: 3px;
 }
 
 .gold {
-	color: gold;
-	background-color: indigo;
-	padding: 5px 10px;
-	border-radius: 3px;
+  color: gold;
+  background-color: indigo;
+  padding: 5px 10px;
+  border-radius: 3px;
 }
 
 #rules {
-	margin: 10px;
+  margin: 10px;
 }
 
 #radios {
-	margin: 10px;
+  margin: 10px;
 }
 
 #leaderboard {
-	text-align: center;
+  text-align: center;
 }
 
 #leaderboard p {
-	margin-bottom: 5px;
-	counter-reset: trows;
+  margin-bottom: 5px;
+  counter-reset: trows;
+}
+
+th {
+  cursor: pointer;
 }
 
 tbody tr {
-	counter-increment: trows;
+  counter-increment: trows;
 }
 
 tbody tr td:first-child::before {
-	content: counter(trows);
+  content: counter(trows);
 }
 
-td, th {
-	border: 1px solid #ddd;
-	padding: 5px 10px;
+td,
+th {
+  border: 1px solid #ddd;
+  padding: 5px 10px;
 }
 
 table {
-	margin: auto;
-	border-collapse: collapse;
+  margin: auto;
+  border-collapse: collapse;
 }
+

@@ -12,6 +12,13 @@
   <div id="vm">
     <h1 class="logo-title">Slots</h1>
     <div id="slots">
+      <p>Bet:</p>
+      <p>Half Wallet</p>
+      <label class="switch">
+        <input type="checkbox" name="fullBet" id="fullBet" v-model="fullBet">
+        <span class="slider"></span>
+      </label>
+      <p>All In</p>
       <p style="display: block">Wallet: {{ money }}</p>
       <label for="username">Username:</label>
       <input type="text" name="username" id="username" @change="newLBEntry" v-model="username">
@@ -47,15 +54,21 @@
       <p>Leaderboard</p>
       <table>
         <thead>
-          <th>#</th>
-          <th>Name</th>
-          <th>Timestamp</th>
-          <th>Score</th>
-          <th>Moves</th>
+          <th @click="reverseOrder(); getFirebaseLB(prev, order);" v-html="sorter"></th>
+          <th @click="prev='user'; getFirebaseLB(prev, order);">Name</th>
+          <th @click="prev='date'; getFirebaseLB(prev, order);">Timestamp</th>
+          <th @click="prev='highscore'; getFirebaseLB(prev, order);">Score</th>
+          <th @click="prev='moves'; getFirebaseLB(prev, order);">Moves</th>
         </thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
   </div>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-firestore.js"></script>
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+      https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-analytics.js"></script>
 </body>
 </html>
